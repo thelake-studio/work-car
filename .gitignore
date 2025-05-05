@@ -1,0 +1,18 @@
+# macOS
+.DS_Store
+.AppleDouble
+.Spotlight-V100
+.Trashes
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+
+# Symfony
+/src/var/
+/src/vendor/
+/src/public/bundles/
+
+# Otros
+*.log
+*.cache
