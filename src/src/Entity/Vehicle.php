@@ -31,6 +31,10 @@ class Vehicle
     #[ORM\Column]
     private ?float $fuelConsumption = null;
 
+    #[ORM\ManyToOne(inversedBy: 'vehicles')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $owner = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -104,6 +108,18 @@ class Vehicle
     public function setFuelConsumption(float $fuelConsumption): static
     {
         $this->fuelConsumption = $fuelConsumption;
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
 
         return $this;
     }
