@@ -22,6 +22,10 @@ class RecordedTrip
     #[ORM\Column]
     private ?float $fuelConsumption = null;
 
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?PlannedTrip $plannedTrip = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +63,18 @@ class RecordedTrip
     public function setFuelConsumption(float $fuelConsumption): static
     {
         $this->fuelConsumption = $fuelConsumption;
+
+        return $this;
+    }
+
+    public function getPlannedTrip(): ?PlannedTrip
+    {
+        return $this->plannedTrip;
+    }
+
+    public function setPlannedTrip(PlannedTrip $plannedTrip): static
+    {
+        $this->plannedTrip = $plannedTrip;
 
         return $this;
     }
