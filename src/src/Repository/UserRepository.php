@@ -38,4 +38,17 @@ class UserRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->flush();
     }
+
+    /**
+     * Busca usuarios por nombre o apellido (insensible a mayúsculas y parcial).
+     */
+    public function searchByNameOrSurname(string $searchTerm): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('LOWER(u.name) LIKE LOWER(:term) OR LOWER(u.surname) LIKE LOWER(:term)')
+            ->setParameter('term', '%' . $searchTerm . '%')
+            ->orderBy('u.surname', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
