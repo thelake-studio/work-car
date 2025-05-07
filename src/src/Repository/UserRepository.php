@@ -95,4 +95,16 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Encuentra usuarios que tienen un número de teléfono registrado.
+     */
+    public function findUsersWithPhone(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.phone_number IS NOT NULL')
+            ->orderBy('u.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
