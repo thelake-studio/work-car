@@ -51,11 +51,46 @@ class User
     #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'participants')]
     private Collection $userGroups;
 
+    /**
+     * @var Collection<int, PersonalLocation>
+     */
+    #[ORM\OneToMany(targetEntity: PersonalLocation::class, mappedBy: 'user')]
+    private Collection $personalLocations;
+
+    /**
+     * @var Collection<int, PersonalSchedule>
+     */
+    #[ORM\OneToMany(targetEntity: PersonalSchedule::class, mappedBy: 'user')]
+    private Collection $personalSchedules;
+
+    /**
+     * @var Collection<int, NonAvailableTime>
+     */
+    #[ORM\OneToMany(targetEntity: NonAvailableTime::class, mappedBy: 'user')]
+    private Collection $nonAvailableTimes;
+
+    /**
+     * @var Collection<int, PlannedTrip>
+     */
+    #[ORM\OneToMany(targetEntity: PlannedTrip::class, mappedBy: 'driver')]
+    private Collection $driverPlannedTrips;
+
+    /**
+     * @var Collection<int, PlannedTrip>
+     */
+    #[ORM\ManyToMany(targetEntity: PlannedTrip::class, mappedBy: 'passengers')]
+    private Collection $passengerPlannedTrips;
+
     public function __construct()
     {
         $this->vehicles = new ArrayCollection();
         $this->managedGroups = new ArrayCollection();
         $this->userGroups = new ArrayCollection();
+        $this->personalLocations = new ArrayCollection();
+        $this->personalSchedules = new ArrayCollection();
+        $this->nonAvailableTimes = new ArrayCollection();
+        $this->driverPlannedTrips = new ArrayCollection();
+        $this->passengerPlannedTrips = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -217,6 +252,153 @@ class User
     {
         if ($this->userGroups->removeElement($userGroup)) {
             $userGroup->removeParticipant($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PersonalLocation>
+     */
+    public function getPersonalLocations(): Collection
+    {
+        return $this->personalLocations;
+    }
+
+    public function addPersonalLocation(PersonalLocation $personalLocation): static
+    {
+        if (!$this->personalLocations->contains($personalLocation)) {
+            $this->personalLocations->add($personalLocation);
+            $personalLocation->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePersonalLocation(PersonalLocation $personalLocation): static
+    {
+        if ($this->personalLocations->removeElement($personalLocation)) {
+            // set the owning side to null (unless already changed)
+            if ($personalLocation->getUser() === $this) {
+                $personalLocation->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PersonalSchedule>
+     */
+    public function getPersonalSchedules(): Collection
+    {
+        return $this->personalSchedules;
+    }
+
+    public function addPersonalSchedule(PersonalSchedule $personalSchedule): static
+    {
+        if (!$this->personalSchedules->contains($personalSchedule)) {
+            $this->personalSchedules->add($personalSchedule);
+            $personalSchedule->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePersonalSchedule(PersonalSchedule $personalSchedule): static
+    {
+        if ($this->personalSchedules->removeElement($personalSchedule)) {
+            // set the owning side to null (unless already changed)
+            if ($personalSchedule->getUser() === $this) {
+                $personalSchedule->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, NonAvailableTime>
+     */
+    public function getNonAvailableTimes(): Collection
+    {
+        return $this->nonAvailableTimes;
+    }
+
+    public function addNonAvailableTime(NonAvailableTime $nonAvailableTime): static
+    {
+        if (!$this->nonAvailableTimes->contains($nonAvailableTime)) {
+            $this->nonAvailableTimes->add($nonAvailableTime);
+            $nonAvailableTime->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNonAvailableTime(NonAvailableTime $nonAvailableTime): static
+    {
+        if ($this->nonAvailableTimes->removeElement($nonAvailableTime)) {
+            // set the owning side to null (unless already changed)
+            if ($nonAvailableTime->getUser() === $this) {
+                $nonAvailableTime->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PlannedTrip>
+     */
+    public function getDriverPlannedTrips(): Collection
+    {
+        return $this->driverPlannedTrips;
+    }
+
+    public function addDriverPlannedTrip(PlannedTrip $driverPlannedTrip): static
+    {
+        if (!$this->driverPlannedTrips->contains($driverPlannedTrip)) {
+            $this->driverPlannedTrips->add($driverPlannedTrip);
+            $driverPlannedTrip->setDriver($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDriverPlannedTrip(PlannedTrip $driverPlannedTrip): static
+    {
+        if ($this->driverPlannedTrips->removeElement($driverPlannedTrip)) {
+            // set the owning side to null (unless already changed)
+            if ($driverPlannedTrip->getDriver() === $this) {
+                $driverPlannedTrip->setDriver(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PlannedTrip>
+     */
+    public function getPassengerPlannedTrips(): Collection
+    {
+        return $this->passengerPlannedTrips;
+    }
+
+    public function addPassengerPlannedTrip(PlannedTrip $passengerPlannedTrip): static
+    {
+        if (!$this->passengerPlannedTrips->contains($passengerPlannedTrip)) {
+            $this->passengerPlannedTrips->add($passengerPlannedTrip);
+            $passengerPlannedTrip->addPassenger($this);
+        }
+
+        return $this;
+    }
+
+    public function removePassengerPlannedTrip(PlannedTrip $passengerPlannedTrip): static
+    {
+        if ($this->passengerPlannedTrips->removeElement($passengerPlannedTrip)) {
+            $passengerPlannedTrip->removePassenger($this);
         }
 
         return $this;
