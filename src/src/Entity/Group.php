@@ -39,9 +39,30 @@ class Group
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'userGroups')]
     private Collection $participants;
 
+    /**
+     * @var Collection<int, GroupLocation>
+     */
+    #[ORM\OneToMany(targetEntity: GroupLocation::class, mappedBy: 'ownerGroup')]
+    private Collection $groupLocations;
+
+    /**
+     * @var Collection<int, GroupSchedule>
+     */
+    #[ORM\OneToMany(targetEntity: GroupSchedule::class, mappedBy: 'ownerGroup')]
+    private Collection $groupSchedules;
+
+    /**
+     * @var Collection<int, PlannedTrip>
+     */
+    #[ORM\OneToMany(targetEntity: PlannedTrip::class, mappedBy: 'ownerGroup')]
+    private Collection $plannedTrips;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
+        $this->groupLocations = new ArrayCollection();
+        $this->groupSchedules = new ArrayCollection();
+        $this->plannedTrips = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -129,6 +150,96 @@ class Group
     public function removeParticipant(User $participant): static
     {
         $this->participants->removeElement($participant);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, GroupLocation>
+     */
+    public function getGroupLocations(): Collection
+    {
+        return $this->groupLocations;
+    }
+
+    public function addGroupLocation(GroupLocation $groupLocation): static
+    {
+        if (!$this->groupLocations->contains($groupLocation)) {
+            $this->groupLocations->add($groupLocation);
+            $groupLocation->setOwnerGroup($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupLocation(GroupLocation $groupLocation): static
+    {
+        if ($this->groupLocations->removeElement($groupLocation)) {
+            // set the owning side to null (unless already changed)
+            if ($groupLocation->getOwnerGroup() === $this) {
+                $groupLocation->setOwnerGroup(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, GroupSchedule>
+     */
+    public function getGroupSchedules(): Collection
+    {
+        return $this->groupSchedules;
+    }
+
+    public function addGroupSchedule(GroupSchedule $groupSchedule): static
+    {
+        if (!$this->groupSchedules->contains($groupSchedule)) {
+            $this->groupSchedules->add($groupSchedule);
+            $groupSchedule->setOwnerGroup($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupSchedule(GroupSchedule $groupSchedule): static
+    {
+        if ($this->groupSchedules->removeElement($groupSchedule)) {
+            // set the owning side to null (unless already changed)
+            if ($groupSchedule->getOwnerGroup() === $this) {
+                $groupSchedule->setOwnerGroup(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PlannedTrip>
+     */
+    public function getPlannedTrips(): Collection
+    {
+        return $this->plannedTrips;
+    }
+
+    public function addPlannedTrip(PlannedTrip $plannedTrip): static
+    {
+        if (!$this->plannedTrips->contains($plannedTrip)) {
+            $this->plannedTrips->add($plannedTrip);
+            $plannedTrip->setOwnerGroup($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlannedTrip(PlannedTrip $plannedTrip): static
+    {
+        if ($this->plannedTrips->removeElement($plannedTrip)) {
+            // set the owning side to null (unless already changed)
+            if ($plannedTrip->getOwnerGroup() === $this) {
+                $plannedTrip->setOwnerGroup(null);
+            }
+        }
 
         return $this;
     }

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PlannedTripRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,6 +27,25 @@ class PlannedTrip
 
     #[ORM\Column(length: 255)]
     private ?string $state = null;
+
+    #[ORM\ManyToOne(inversedBy: 'driverPlannedTrips')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $driver = null;
+
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'passengerPlannedTrips')]
+    private Collection $passengers;
+
+    #[ORM\ManyToOne(inversedBy: 'plannedTrips')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Group $ownerGroup = null;
+
+    public function __construct()
+    {
+        $this->passengers = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -75,6 +96,54 @@ class PlannedTrip
     public function setState(string $state): static
     {
         $this->state = $state;
+
+        return $this;
+    }
+
+    public function getDriver(): ?User
+    {
+        return $this->driver;
+    }
+
+    public function setDriver(?User $driver): static
+    {
+        $this->driver = $driver;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getPassengers(): Collection
+    {
+        return $this->passengers;
+    }
+
+    public function addPassenger(User $passenger): static
+    {
+        if (!$this->passengers->contains($passenger)) {
+            $this->passengers->add($passenger);
+        }
+
+        return $this;
+    }
+
+    public function removePassenger(User $passenger): static
+    {
+        $this->passengers->removeElement($passenger);
+
+        return $this;
+    }
+
+    public function getOwnerGroup(): ?Group
+    {
+        return $this->ownerGroup;
+    }
+
+    public function setOwnerGroup(?Group $ownerGroup): static
+    {
+        $this->ownerGroup = $ownerGroup;
 
         return $this;
     }

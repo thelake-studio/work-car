@@ -26,6 +26,10 @@ class PersonalSchedule
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     private ?\DateTime $endTime = null;
 
+    #[ORM\ManyToOne(inversedBy: 'personalSchedules')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +79,18 @@ class PersonalSchedule
     public function setEndTime(\DateTime $endTime): static
     {
         $this->endTime = $endTime;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

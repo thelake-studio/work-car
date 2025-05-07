@@ -29,6 +29,10 @@ class GroupLocation
     #[ORM\Column(length: 255)]
     private ?string $type = null;
 
+    #[ORM\ManyToOne(inversedBy: 'groupLocations')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Group $ownerGroup = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +94,18 @@ class GroupLocation
     public function setType(string $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getOwnerGroup(): ?Group
+    {
+        return $this->ownerGroup;
+    }
+
+    public function setOwnerGroup(?Group $ownerGroup): static
+    {
+        $this->ownerGroup = $ownerGroup;
 
         return $this;
     }
