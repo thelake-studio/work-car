@@ -51,4 +51,17 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Busca usuarios por número de teléfono (coincidencia parcial).
+     */
+    public function searchByPhoneNumber(string $phoneFragment): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.phone_number LIKE :phone')
+            ->setParameter('phone', '%' . $phoneFragment . '%')
+            ->orderBy('u.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
