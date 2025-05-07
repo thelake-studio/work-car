@@ -16,28 +16,95 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
-    //    /**
-    //     * @return User[] Returns an array of User objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function save(User $user, bool $flush = true): void
+    {
+        $this->getEntityManager()->persist($user);
 
-    //    public function findOneBySomeField($value): ?User
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function delete(User $user, bool $flush = true): void
+    {
+        $this->getEntityManager()->remove($user);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
+    /**
+     * Busca usuarios por nombre o apellido (insensible a mayúsculas y parcial).
+     */
+    public function searchByNameOrSurname(string $searchTerm): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('LOWER(u.name) LIKE LOWER(:term) OR LOWER(u.surname) LIKE LOWER(:term)')
+            ->setParameter('term', '%' . $searchTerm . '%')
+            ->orderBy('u.surname', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Busca usuarios por número de teléfono (coincidencia parcial).
+     */
+    public function searchByPhoneNumber(string $phoneFragment): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.phone_number LIKE :phone')
+            ->setParameter('phone', '%' . $phoneFragment . '%')
+            ->orderBy('u.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Busca usuarios por correo electrónico (coincidencia parcial o exacta).
+     */
+    public function searchByEmail(string $emailFragment): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.email LIKE :email')
+            ->setParameter('email', '%' . $emailFragment . '%')
+            ->orderBy('u.email', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Busca usuarios por cualquier campo clave (nombre, apellido, teléfono o email).
+     */
+    public function globalSearch(string $searchTerm): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('
+                LOWER(u.name) LIKE LOWER(:term) OR
+                LOWER(u.surname) LIKE LOWER(:term) OR
+                u.phone_number LIKE :term OR
+                u.email LIKE :term
+            ')
+            ->setParameter('term', '%' . $searchTerm . '%')
+            ->orderBy('u.surname', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Encuentra usuarios que tienen un número de teléfono registrado.
+     */
+    public function findUsersWithPhone(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.phone_number IS NOT NULL')
+            ->orderBy('u.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
