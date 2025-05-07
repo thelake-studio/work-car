@@ -77,4 +77,22 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Busca usuarios por cualquier campo clave (nombre, apellido, teléfono o email).
+     */
+    public function globalSearch(string $searchTerm): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('
+                LOWER(u.name) LIKE LOWER(:term) OR
+                LOWER(u.surname) LIKE LOWER(:term) OR
+                u.phone_number LIKE :term OR
+                u.email LIKE :term
+            ')
+            ->setParameter('term', '%' . $searchTerm . '%')
+            ->orderBy('u.surname', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
