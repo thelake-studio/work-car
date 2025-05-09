@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 
 class UserForm extends AbstractType
 {
@@ -40,7 +41,14 @@ class UserForm extends AbstractType
                 ],
                 'help' => 'Formato: +34 seguido de 9 dígitos'
             ])
-            ->add('email')
+            ->add('email', EmailType::class, [
+                'label' => 'Email *',
+                'attr' => [
+                    'placeholder' => 'Ej: usuario@dominio.com',
+                    'autocomplete' => 'email'
+                ],
+                'help' => 'Debe ser un email válido y único'
+            ])
             ->add('password')
             ->add('profilePicture')
         ;
