@@ -21,16 +21,6 @@ class UserForm extends AbstractType
             ->add('email')
             ->add('password')
             ->add('profilePicture')
-            ->add('userGroups', EntityType::class, [
-                'class' => Group::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-            ])
-            ->add('passengerPlannedTrips', EntityType::class, [
-                'class' => PlannedTrip::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-            ])
         ;
     }
 
