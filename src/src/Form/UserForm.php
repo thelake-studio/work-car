@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 
 class UserForm extends AbstractType
 {
@@ -29,7 +30,16 @@ class UserForm extends AbstractType
                 ],
                 'help' => 'Mínimo 2 caracteres, máximo 100'
             ])
-            ->add('phoneNumber')
+            ->add('phoneNumber', TelType::class, [
+                'label' => 'Teléfono móvil',
+                'required' => false,
+                'attr' => [
+                    'placeholder' => 'Ej: +34612345678',
+                    'autocomplete' => 'tel',
+                    'pattern' => '^(\+34|0034|34)?[6-9]\d{8}$'
+                ],
+                'help' => 'Formato: +34 seguido de 9 dígitos'
+            ])
             ->add('email')
             ->add('password')
             ->add('profilePicture')
