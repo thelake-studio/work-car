@@ -9,6 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 class UserForm extends AbstractType
 {
@@ -49,7 +50,14 @@ class UserForm extends AbstractType
                 ],
                 'help' => 'Debe ser un email válido y único'
             ])
-            ->add('password')
+            ->add('password', PasswordType::class, [
+                'label' => 'Contraseña *',
+                'attr' => [
+                    'placeholder' => '••••••••',
+                    'autocomplete' => 'new-password'
+                ],
+                'help' => 'Mínimo 8 caracteres con mayúsculas, números y símbolos'
+            ])
             ->add('profilePicture')
         ;
     }
