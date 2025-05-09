@@ -47,6 +47,8 @@ class User
     private ?string $phoneNumber = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'El email es obligatorio.')]
+    #[Assert\Email(message: 'El email {{ value }} no es válido.')]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
