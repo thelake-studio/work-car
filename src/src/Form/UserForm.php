@@ -21,7 +21,14 @@ class UserForm extends AbstractType
                 ],
                 'help' => 'Mínimo 2 caracteres, máximo 50'
             ])
-            ->add('surname')
+            ->add('surname', TextType::class, [
+                'label' => 'Apellidos *',
+                'attr' => [
+                    'placeholder' => 'Ej: García García',
+                    'autocomplete' => 'family-name'
+                ],
+                'help' => 'Mínimo 2 caracteres, máximo 100'
+            ])
             ->add('phoneNumber')
             ->add('email')
             ->add('password')
