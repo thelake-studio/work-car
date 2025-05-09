@@ -30,6 +30,13 @@ class User
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'El apellido es obligatorio.')]
+    #[Assert\Length(
+        min: 2,
+        max: 100,
+        minMessage: 'El apellido debe tener al menos {{ limit }} caracteres.',
+        maxMessage: 'El apellido no puede exceder {{ limit }} caracteres.'
+    )]
     private ?string $surname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
