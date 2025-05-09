@@ -52,6 +52,16 @@ class User
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'La contraseña es obligatoria.')]
+    #[Assert\Length(
+        min: 8,
+        max: 255,
+        minMessage: 'La contraseña debe tener al menos {{ limit }} caracteres.'
+    )]
+    #[Assert\Regex(
+        pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/',
+        message: 'La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial.'
+    )]
     private ?string $password = null;
 
     #[ORM\Column(length: 255, nullable: true)]
