@@ -40,6 +40,10 @@ class User
     private ?string $surname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Regex(
+        pattern: '/^(\+34|0034|34)?[6-9]\d{8}$/',
+        message: 'Formato de teléfono no válido. Ejemplo válido: +34612345678'
+    )]
     private ?string $phoneNumber = null;
 
     #[ORM\Column(length: 255)]
