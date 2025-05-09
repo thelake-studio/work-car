@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class UserForm extends AbstractType
 {
@@ -58,7 +59,13 @@ class UserForm extends AbstractType
                 ],
                 'help' => 'Mínimo 8 caracteres con mayúsculas, números y símbolos'
             ])
-            ->add('profilePicture')
+            ->add('profilePicture', FileType::class, [
+                'label' => 'Foto de perfil',
+                'mapped' => false,
+                'required' => false,
+                'attr' => ['accept' => 'image/jpeg, image/png'],
+                'help' => 'Enlace a imagen en formato JPG o PNG'
+            ])
         ;
     }
 
